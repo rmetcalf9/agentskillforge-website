@@ -22,9 +22,9 @@ const year = new Date().getFullYear();
 						src="/agentskillforge-logo-asf-alt2.png"
 						alt="agentskillforge logo"
 						class="h-7 w-auto"
-						/>
-						<span class="text-brand-secondary">agentskillforge.com</span>
-					</a>
+					/>
+					<span class="text-brand-secondary">agentskillforge.com</span>
+				</a>
 				<nav class="hidden items-center gap-6 text-sm md:flex">
 					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="#services">Services</a>
 					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="#different">What’s different</a>
@@ -44,7 +44,7 @@ const year = new Date().getFullYear();
 							src="/ai_adoption_levels.png"
 							alt="AI adoption levels"
 							class="rounded-2xl border border-brand-secondary/10 bg-white p-2"
-							/>
+						/>
 					</div>
 
 					<div class="max-w-3xl">
@@ -74,33 +74,45 @@ const year = new Date().getFullYear();
 			</section>
 
 			<section class="container py-14">
-				<h2 class="text-2xl font-semibold tracking-tight md:text-3xl">One system, Your System</h2>
-				<p class="mt-3 max-w-2xl text-brand-secondary/80">
-					Your agents should run inside your environment, under your rules. That’s how responsibility stays clear and control stays real.
-				</p>
+				<div class="grid gap-10 md:grid-cols-2 md:items-start">
+					<div>
+						<h2 class="text-2xl font-semibold tracking-tight md:text-3xl">One system, Your System</h2>
+						<p class="mt-3 max-w-2xl text-brand-secondary/80">
+							Your agents should run inside your environment, under your rules. That’s how responsibility stays clear and control stays real.
+						</p>
 
-				<ul class="mt-6 space-y-3 text-sm text-brand-secondary/80">
-					<li class="flex gap-3">
-						<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
-						<span>Agents hosted on your servers.</span>
-					</li>
-					<li class="flex gap-3">
-						<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
-						<span>Connected to your systems</span>
-					</li>
-					<li class="flex gap-3">
-						<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
-						<span>Specialist training remains yours</span>
-					</li>
-					<li class="flex gap-3">
-						<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
-						<span>Governance and auditability stay in-house</span>
-					</li>
-					<li class="flex gap-3">
-						<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
-						<span>Portability and exit rights on your terms</span>
-					</li>
-				</ul>
+						<ul class="mt-6 space-y-3 text-sm text-brand-secondary/80">
+							<li class="flex gap-3">
+								<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
+								<span>Agents hosted on your servers.</span>
+							</li>
+							<li class="flex gap-3">
+								<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
+								<span>Connected to your systems</span>
+							</li>
+							<li class="flex gap-3">
+								<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
+								<span>Specialist training remains yours</span>
+							</li>
+							<li class="flex gap-3">
+								<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
+								<span>Governance and auditability stay in-house</span>
+							</li>
+							<li class="flex gap-3">
+								<span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-brand-secondary"></span>
+								<span>Portability and exit rights on your terms</span>
+							</li>
+						</ul>
+					</div>
+
+					<div class="flex justify-start md:justify-end">
+						<img
+							src="/one-system_circular.png"
+							alt="One system, your system"
+							class="w-full max-w-sm rounded-2xl border border-brand-secondary/10 bg-white p-2"
+						/>
+					</div>
+				</div>
 			</section>
 
 			<section class="container py-16 md:py-20">
@@ -116,10 +128,16 @@ const year = new Date().getFullYear();
 						<div class="mt-8 flex flex-col gap-3 sm:flex-row">
 							<a
 								href="#services"
-								class="rounded-lg border border-brand-secondary/10 bg-white px-5 py-3 text-center text-sm font-medium text-brand-secondary hover:bg-brand-background">Explore services</a>
+								class="rounded-lg border border-brand-secondary/10 bg-white px-5 py-3 text-center text-sm font-medium text-brand-secondary hover:bg-brand-background"
+							>
+								Explore services
+							</a>
 							<a
 								href="#contact"
-								class="rounded-lg bg-brand-primary px-5 py-3 text-center text-sm font-medium text-white hover:bg-brand-primary/90">Get in touch</a>
+								class="rounded-lg bg-brand-primary px-5 py-3 text-center text-sm font-medium text-white hover:bg-brand-primary/90"
+							>
+								Get in touch
+							</a>
 						</div>
 
 						<div class="mt-8 flex flex-wrap gap-2 text-xs font-medium text-brand-secondary/70">
@@ -243,10 +261,16 @@ const year = new Date().getFullYear();
 						<div class="mt-6 flex flex-col gap-3 sm:flex-row">
 							<a
 								href={`mailto:${email}?subject=${encodeURIComponent('Agentskillforge - Website Inquiry')}`}
-								class="rounded-lg bg-brand-primary px-5 py-3 text-center text-sm font-medium text-white hover:bg-brand-primary/90">Email {email}</a>
+								class="rounded-lg bg-brand-primary px-5 py-3 text-center text-sm font-medium text-white hover:bg-brand-primary/90"
+							>
+								Email {email}
+							</a>
 							<a
 								href="#services"
-								class="rounded-lg border border-brand-secondary/10 bg-white px-5 py-3 text-center text-sm font-medium text-brand-secondary hover:bg-brand-background">See services again</a>
+								class="rounded-lg border border-brand-secondary/10 bg-white px-5 py-3 text-center text-sm font-medium text-brand-secondary hover:bg-brand-background"
+							>
+								See services again
+							</a>
 						</div>
 					</div>
 
