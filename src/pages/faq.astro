@@ -1,0 +1,75 @@
+---
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>agentskillforge.com - FAQ</title>
+		<meta
+			name="description"
+			content="Frequently asked questions about long-running workflow agents and how Agent Skill Forge helps teams build and evolve agentic systems."
+		/>
+	</head>
+	<body>
+		<header class="sticky top-0 z-50 border-b border-brand-secondary/10 bg-brand-background/80 backdrop-blur">
+			<div class="container flex h-16 items-center justify-between">
+				<a href="/" class="flex items-center gap-3 font-semibold tracking-tight">
+					<img
+						src="/agentskillforge-logo-asf-alt2.png"
+						alt="agentskillforge logo"
+						class="h-7 w-auto"
+					/>
+					<span class="text-brand-secondary">agentskillforge.com</span>
+				</a>
+				<nav class="hidden items-center gap-6 text-sm md:flex">
+					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="/services">Services</a>
+					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="/#different">What’s different</a>
+					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="/faq">FAQ</a>
+					<a
+						class="rounded-lg bg-brand-secondary px-4 py-2 text-white hover:bg-brand-secondary/90"
+						href="/contact">Contact</a>
+				</nav>
+			</div>
+		</header>
+
+		<main id="top">
+			<section id="faq" class="border-t border-brand-secondary/10 bg-brand-background">
+				<div class="container py-14">
+					<h2 class="text-2xl font-semibold tracking-tight">FAQ</h2>
+					<div class="mt-8 space-y-4">
+						<details class="group rounded-2xl border border-brand-secondary/10 bg-white px-6 py-4">
+							<summary class="cursor-pointer list-none font-medium">What do you mean by “long-running workflow agents”?</summary>
+							<p class="mt-2 text-sm leading-relaxed text-brand-secondary/80">
+								Agents that stay useful over time, supporting ongoing work (and learning) instead of just running once like a script.
+							</p>
+						</details>
+						<details class="group rounded-2xl border border-brand-secondary/10 bg-white px-6 py-4">
+							<summary class="cursor-pointer list-none font-medium">How is this different from one-off automation?</summary>
+							<p class="mt-2 text-sm leading-relaxed text-brand-secondary/80">
+								We design for outcomes and operating style, then help teams learn, govern, and evolve the system.
+							</p>
+						</details>
+						<details class="group rounded-2xl border border-brand-secondary/10 bg-white px-6 py-4">
+							<summary class="cursor-pointer list-none font-medium">What should we automate first?</summary>
+							<p class="mt-2 text-sm leading-relaxed text-brand-secondary/80">
+								We start with workflows that benefit from repetition, structure, and clear business goals. Then we scope, train, and ship a pilot.
+							</p>
+						</details>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer class="border-t border-brand-secondary/10">
+			<div class="container py-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+				<p class="text-sm text-brand-secondary/70">© {year} agentskillforge.com</p>
+				<div class="flex gap-4 text-sm">
+					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="/">Back to home</a>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,5 +1,4 @@
 ---
-const email = 'contact@agentskillforge.com';
 const year = new Date().getFullYear();
 ---
 
@@ -26,12 +25,12 @@ const year = new Date().getFullYear();
 					<span class="text-brand-secondary">agentskillforge.com</span>
 				</a>
 				<nav class="hidden items-center gap-6 text-sm md:flex">
-					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="#services">Services</a>
-					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="#different">What’s different</a>
-					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="#faq">FAQ</a>
+					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="/services">Services</a>
+					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="/#different">What’s different</a>
+					<a class="text-brand-secondary/70 hover:text-brand-secondary" href="/faq">FAQ</a>
 					<a
 						class="rounded-lg bg-brand-secondary px-4 py-2 text-white hover:bg-brand-secondary/90"
-						href="#contact">Contact</a>
+						href="/contact">Contact</a>
 				</nav>
 			</div>
 		</header>
@@ -63,7 +62,7 @@ const year = new Date().getFullYear();
 
 						<div class="mt-8">
 							<a
-								href="#contact"
+								href="/contact"
 								class="inline-flex items-center justify-center rounded-lg bg-brand-primary px-6 py-3 text-sm font-medium text-white hover:bg-brand-primary/90"
 							>
 								Get your Level 1/2 → Level 4 roadmap
@@ -173,13 +172,13 @@ const year = new Date().getFullYear();
 
 						<div class="mt-8 flex flex-col gap-3 sm:flex-row">
 							<a
-								href="#services"
+								href="/services"
 								class="rounded-lg border border-brand-secondary/10 bg-white px-5 py-3 text-center text-sm font-medium text-brand-secondary hover:bg-brand-background"
 							>
 								Explore services
 							</a>
 							<a
-								href="#contact"
+								href="/contact"
 								class="rounded-lg bg-brand-primary px-5 py-3 text-center text-sm font-medium text-white hover:bg-brand-primary/90"
 							>
 								Get in touch
@@ -242,94 +241,6 @@ const year = new Date().getFullYear();
 				</div>
 			</section>
 
-			<section id="services" class="container py-14">
-				<h2 class="text-2xl font-semibold tracking-tight">What we offer (starting menu)</h2>
-				<p class="mt-3 max-w-2xl text-brand-secondary/80">Pick a starting point and evolve from there.</p>
-
-				<div class="mt-8 grid gap-4 md:grid-cols-2">
-					{[
-						{
-							title: 'Consulting',
-							body: 'Educate leaders and teams on what agents are, what to automate first, and how to design for outcomes.',
-						},
-						{
-							title: 'Ready-made agentic systems',
-							body: 'Packaged, configurable agents for common business workflows.',
-						},
-						{
-							title: 'Pre-trained agents',
-							body: 'Starting points tailored to a business’s domain and constraints.',
-						},
-						{
-							title: 'Staff agents / training',
-							body: 'Making agentic tools available to staff safely and effectively.',
-						},
-					].map((s) => (
-						<div class="rounded-2xl border border-brand-secondary/10 bg-white p-6">
-							<h3 class="text-base font-semibold">{s.title}</h3>
-							<p class="mt-3 text-sm leading-relaxed text-brand-secondary/80">{s.body}</p>
-						</div>
-					))}
-				</div>
-			</section>
-
-			<section id="faq" class="border-t border-brand-secondary/10 bg-brand-background">
-				<div class="container py-14">
-					<h2 class="text-2xl font-semibold tracking-tight">FAQ</h2>
-					<div class="mt-8 space-y-4">
-						<details class="group rounded-2xl border border-brand-secondary/10 bg-white px-6 py-4">
-							<summary class="cursor-pointer list-none font-medium">What do you mean by “long-running workflow agents”?</summary>
-							<p class="mt-2 text-sm leading-relaxed text-brand-secondary/80">
-								Agents that stay useful over time, supporting ongoing work (and learning) instead of just running once like a script.
-							</p>
-						</details>
-						<details class="group rounded-2xl border border-brand-secondary/10 bg-white px-6 py-4">
-							<summary class="cursor-pointer list-none font-medium">How is this different from one-off automation?</summary>
-							<p class="mt-2 text-sm leading-relaxed text-brand-secondary/80">
-								We design for outcomes and operating style, then help teams learn, govern, and evolve the system.
-							</p>
-						</details>
-						<details class="group rounded-2xl border border-brand-secondary/10 bg-white px-6 py-4">
-							<summary class="cursor-pointer list-none font-medium">What should we automate first?</summary>
-							<p class="mt-2 text-sm leading-relaxed text-brand-secondary/80">
-								We start with workflows that benefit from repetition, structure, and clear business goals. Then we scope, train, and ship a pilot.
-							</p>
-						</details>
-					</div>
-				</div>
-			</section>
-
-			<section id="contact" class="container py-14">
-				<div class="grid gap-10 md:grid-cols-2 md:items-center">
-					<div>
-						<h2 class="text-2xl font-semibold tracking-tight">Let’s build your first agentic workflow pilot</h2>
-						<p class="mt-3 text-brand-secondary/80">Email us and we’ll suggest a smart starting point based on your goals and constraints.</p>
-						<div class="mt-6 flex flex-col gap-3 sm:flex-row">
-							<a
-								href={`mailto:${email}?subject=${encodeURIComponent('Agentskillforge - Website Inquiry')}`}
-								class="rounded-lg bg-brand-primary px-5 py-3 text-center text-sm font-medium text-white hover:bg-brand-primary/90"
-							>
-								Email {email}
-							</a>
-							<a
-								href="#services"
-								class="rounded-lg border border-brand-secondary/10 bg-white px-5 py-3 text-center text-sm font-medium text-brand-secondary hover:bg-brand-background"
-							>
-								See services again
-							</a>
-						</div>
-					</div>
-
-					<div class="rounded-2xl border border-brand-secondary/10 bg-white p-6">
-						<p class="text-sm font-medium text-brand-secondary">What to include in your message</p>
-						<ul class="mt-3 space-y-2 text-sm text-brand-secondary/80">
-							<li>Which workflow(s) you want to improve</li>
-							<li>What “success” looks like for your team</li>
-							<li>Any constraints (tools, data, compliance)</li>
-						</ul>
-					</div>
-				</div>
-			</section>
 		</main>
 
 		<footer class="border-t border-brand-secondary/10">
