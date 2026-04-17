@@ -70,13 +70,51 @@ const qr = await QRCode.toDataURL(url);
 						</div>
 					</div>
 
-					<div class="rounded-2xl border border-brand-secondary/10 bg-white p-6">
-						<p class="text-sm font-medium text-brand-secondary">What to include in your message</p>
-						<ul class="mt-3 space-y-2 text-sm text-brand-secondary/80">
-							<li>Which workflow(s) you want to improve</li>
-							<li>What “success” looks like for your team</li>
-							<li>Any constraints (tools, data, compliance)</li>
-						</ul>
+					<div class="flex flex-col gap-6">
+						<div class="rounded-2xl border border-brand-secondary/10 bg-white p-6">
+							<p class="text-sm font-medium text-brand-secondary">What to include in your message</p>
+							<ul class="mt-3 space-y-2 text-sm text-brand-secondary/80">
+								<li>Which workflow(s) you want to improve</li>
+								<li>What “success” looks like for your team</li>
+								<li>Any constraints (tools, data, compliance)</li>
+							</ul>
+						</div>
+
+						<div class="rounded-2xl border border-brand-secondary/10 bg-white p-6">
+							<p class="text-sm font-medium text-brand-secondary">Book an intro call</p>
+							<p class="mt-3 text-sm text-brand-secondary/80">
+								Pick a time in <b>Europe/London</b> for the next <b>3 working days</b>. Meetings are online (Google Meet).
+							</p>
+
+							<form id="sales-call-form" class="mt-5 space-y-4">
+								<div>
+									<label for="sales-call-date" class="text-sm font-medium text-brand-secondary">Choose day</label>
+									<select id="sales-call-date" class="mt-2 w-full rounded-lg border border-brand-secondary/10 bg-white px-3 py-2 text-sm" required></select>
+								</div>
+
+								<div>
+									<label class="text-sm font-medium text-brand-secondary">Choose time</label>
+									<div id="sales-call-slots" class="mt-2 grid grid-cols-2 gap-2"></div>
+									<input type="hidden" id="sales-call-slotStart" required />
+								</div>
+
+								<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+									<input id="sales-call-name" placeholder="Your name" class="w-full rounded-lg border border-brand-secondary/10 bg-white px-3 py-2 text-sm" required />
+									<input id="sales-call-companyName" placeholder="Company name" class="w-full rounded-lg border border-brand-secondary/10 bg-white px-3 py-2 text-sm" required />
+									<input id="sales-call-position" placeholder="Position" class="w-full rounded-lg border border-brand-secondary/10 bg-white px-3 py-2 text-sm" required />
+									<input id="sales-call-companySize" placeholder="Company size (e.g. 11-50)" class="w-full rounded-lg border border-brand-secondary/10 bg-white px-3 py-2 text-sm" required />
+								</div>
+
+								<input id="sales-call-aiUsageLevel" placeholder="Current AI usage level" class="w-full rounded-lg border border-brand-secondary/10 bg-white px-3 py-2 text-sm" required />
+								<input id="sales-call-email" type="email" placeholder="Email" class="w-full rounded-lg border border-brand-secondary/10 bg-white px-3 py-2 text-sm" required />
+
+								<div id="sales-call-status" class="text-sm text-brand-secondary/80"></div>
+
+								<button type="submit" class="w-full rounded-lg bg-brand-primary px-5 py-3 text-center text-sm font-medium text-white hover:bg-brand-primary/90">
+									Book meeting
+								</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -90,5 +128,178 @@ const qr = await QRCode.toDataURL(url);
 				</div>
 			</div>
 		</footer>
+
+		<script type="module">
+			const AVAIL_URL = "https://api.agentskillforge.com/sales-call/available?days=3";
+			const BOOK_URL = "https://api.agentskillforge.com/sales-call/book";
+
+			const form = document.getElementById("sales-call-form");
+			const statusEl = document.getElementById("sales-call-status");
+			const dateEl = document.getElementById("sales-call-date");
+			const slotsEl = document.getElementById("sales-call-slots");
+			const slotStartEl = document.getElementById("sales-call-slotStart");
+
+			const customer = {
+				name: document.getElementById("sales-call-name"),
+				companyName: document.getElementById("sales-call-companyName"),
+				position: document.getElementById("sales-call-position"),
+				companySize: document.getElementById("sales-call-companySize"),
+				aiUsageLevel: document.getElementById("sales-call-aiUsageLevel"),
+				email: document.getElementById("sales-call-email"),
+			};
+
+			let slotsByDay = [];
+
+			function setStatus(msg) {
+				if (statusEl) statusEl.textContent = msg || "";
+			}
+
+			function dayKeyFromSlotStart(iso) {
+				return (iso || "").slice(0, 10); // YYYY-MM-DD
+			}
+
+			function formatDayLabel(dateStr) {
+				// dateStr = YYYY-MM-DD
+				const d = new Date(dateStr + "T00:00:00");
+				return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+			}
+
+			function normalizeSlots(data) {
+				if (Array.isArray(data?.slotsByDay)) return data.slotsByDay;
+				if (Array.isArray(data?.slots)) {
+					const map = new Map();
+					for (const s of data.slots) {
+						const date = dayKeyFromSlotStart(s.start);
+						if (!map.has(date)) map.set(date, []);
+						map.get(date).push(s);
+					}
+					return [...map.entries()]
+						.sort((a, b) => a[0].localeCompare(b[0]))
+						.map(([date, slots]) => ({ date, slots }));
+				}
+				return [];
+			}
+
+			function renderSlotsForDate(dateStr) {
+				slotsEl.innerHTML = "";
+				slotStartEl.value = "";
+
+				const day = slotsByDay.find((d) => d.date === dateStr);
+				if (!day || !day.slots || day.slots.length === 0) {
+					const empty = document.createElement("div");
+					empty.className = "col-span-2 text-sm text-brand-secondary/80";
+					empty.textContent = "No times available";
+					slotsEl.appendChild(empty);
+					return;
+				}
+
+				day.slots.forEach((slot) => {
+					const btn = document.createElement("button");
+					btn.type = "button";
+					btn.textContent = new Date(slot.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+					btn.className = "rounded-lg border border-brand-secondary/10 bg-white px-3 py-2 text-sm text-left hover:border-brand-secondary/30";
+
+					btn.addEventListener("click", () => {
+						slotStartEl.value = slot.start;
+						[...slotsEl.querySelectorAll("button")].forEach((b) => (b.style.outline = "none"));
+						btn.style.outline = "2px solid #2563eb";
+					});
+
+					slotsEl.appendChild(btn);
+				});
+			}
+
+			async function loadAvailability() {
+				setStatus("Loading available times…");
+				try {
+					const res = await fetch(AVAIL_URL, { method: "GET" });
+					if (!res.ok) throw new Error(`Availability request failed: ${res.status}`);
+					const data = await res.json();
+					slotsByDay = normalizeSlots(data);
+
+					dateEl.innerHTML = "";
+					if (slotsByDay.length === 0) {
+						setStatus("No availability found for the next 3 working days.");
+						return;
+					}
+
+					for (const day of slotsByDay) {
+						const opt = document.createElement("option");
+						opt.value = day.date;
+						opt.textContent = formatDayLabel(day.date);
+						dateEl.appendChild(opt);
+					}
+
+					renderSlotsForDate(slotsByDay[0].date);
+					dateEl.value = slotsByDay[0].date;
+					setStatus("");
+				} catch (err) {
+					console.error(err);
+					setStatus("Sorry, we couldn’t load available times. Please try again.");
+				}
+			}
+
+			if (dateEl) {
+				dateEl.addEventListener("change", () => {
+					if (dateEl.value) renderSlotsForDate(dateEl.value);
+				});
+			}
+
+			if (form) {
+				form.addEventListener("submit", async (e) => {
+					e.preventDefault();
+
+					if (!slotStartEl.value) {
+						setStatus("Please select a time slot.");
+						return;
+					}
+
+					const payload = {
+						slotStart: slotStartEl.value,
+						customer: {
+							name: customer.name.value.trim(),
+							companyName: customer.companyName.value.trim(),
+							position: customer.position.value.trim(),
+							companySize: customer.companySize.value.trim(),
+							aiUsageLevel: customer.aiUsageLevel.value.trim(),
+							email: customer.email.value.trim(),
+						},
+					};
+
+					setStatus("Booking your call…");
+
+					try {
+						const res = await fetch(BOOK_URL, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(payload),
+						});
+
+						const data = await res.json().catch(() => ({}));
+
+						if (res.status === 409) {
+							setStatus("That slot was just booked. Please choose another time.");
+							await loadAvailability();
+							return;
+						}
+
+						if (!res.ok) {
+							console.error("Booking failed:", res.status, data);
+							setStatus("Booking failed. Please try again.");
+							return;
+						}
+
+						setStatus("Booked! Please check your email for the calendar invite.");
+						form.reset();
+						await loadAvailability();
+					} catch (err) {
+						console.error(err);
+						setStatus("Booking failed. Please try again.");
+					}
+				});
+			}
+
+			loadAvailability();
+		</script>
 	</body>
 </html>
