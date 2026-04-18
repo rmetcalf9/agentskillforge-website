@@ -75,9 +75,15 @@ const qr = await QRCode.toDataURL(url);
 
 						<div class="rounded-2xl border border-brand-secondary/10 bg-white p-6">
 							<p class="text-sm font-medium text-brand-secondary">Book an intro call</p>
-							<p class="mt-3 text-sm text-brand-secondary/80">
-								Choose a convenient time (Europe/London) for a short introductory meeting. We’ll meet online via Google Meet to discuss your goals and see if we’re a good fit.
-							</p>
+
+							<div id="sales-call-success-content" class="hidden mt-3 rounded-xl border border-brand-secondary/10 bg-brand-background/40 p-4">
+								<p id="sales-call-success-text" class="text-sm text-brand-secondary/80"></p>
+							</div>
+
+							<div id="sales-call-form-content">
+								<p class="mt-3 text-sm text-brand-secondary/80">
+									Choose a convenient time (Europe/London) for a short introductory meeting. We’ll meet online via Google Meet to discuss your goals and see if we’re a good fit.
+								</p>
 
 							<form id="sales-call-form" class="mt-5 space-y-4">
 								<div>
@@ -107,6 +113,7 @@ const qr = await QRCode.toDataURL(url);
 									Book meeting
 								</button>
 							</form>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -123,8 +130,14 @@ const qr = await QRCode.toDataURL(url);
 		</footer>
 
 		<script type="module">
-			const AVAIL_URL = "https://api.agentskillforge.com/sales-call/available?days=3";
+			const DAYS = 3;
+			const AVAIL_URL = `https://api.agentskillforge.com/sales-call/available?days=${DAYS}`;
 			const BOOK_URL = "https://api.agentskillforge.com/sales-call/book";
+			const COOKIE_NAME = "agentskillforge_sales_call_booked";
+
+			const formContentEl = document.getElementById("sales-call-form-content");
+			const successContentEl = document.getElementById("sales-call-success-content");
+			const successTextEl = document.getElementById("sales-call-success-text");
 
 			const form = document.getElementById("sales-call-form");
 			const statusEl = document.getElementById("sales-call-status");
@@ -146,6 +159,59 @@ const qr = await QRCode.toDataURL(url);
 			function setStatus(msg) {
 				if (statusEl) statusEl.textContent = msg || "";
 			}
+
+			function getCookie(name) {
+				const parts = document.cookie.split(";").map((c) => c.trim());
+				for (const part of parts) {
+					if (part.startsWith(name + "=")) return decodeURIComponent(part.slice(name.length + 1));
+				}
+				return null;
+			}
+
+			function setCookie(name, value, maxAgeSeconds) {
+				let cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Lax`;
+				if (location.protocol === "https:") cookie += "; Secure";
+				document.cookie = cookie;
+			}
+
+			function formatBookedWhen(slotStartIso) {
+				const d = new Date(slotStartIso);
+				const time = new Intl.DateTimeFormat("en-GB", {
+					timeZone: "Europe/London",
+					hour: "2-digit",
+					minute: "2-digit",
+					hour12: false,
+				}).format(d);
+
+				const day = new Intl.DateTimeFormat("en-GB", {
+					timeZone: "Europe/London",
+					day: "2-digit",
+				}).format(d);
+
+				const month = new Intl.DateTimeFormat("en-GB", {
+					timeZone: "Europe/London",
+					month: "short",
+				}).format(d).toUpperCase();
+
+				const year = new Intl.DateTimeFormat("en-GB", {
+					timeZone: "Europe/London",
+					year: "numeric",
+				}).format(d);
+
+				return `Introductory meeting arranged at ${time} on ${day}-${month}-${year}`;
+			}
+
+			function showBooked(slotStartIso) {
+				if (successContentEl && successTextEl) {
+					successTextEl.textContent = formatBookedWhen(slotStartIso);
+					successContentEl.classList.remove("hidden");
+				}
+				if (formContentEl) formContentEl.classList.add("hidden");
+				setStatus("");
+			}
+
+			const bookedSlotStart = getCookie(COOKIE_NAME);
+			if (bookedSlotStart) showBooked(bookedSlotStart);
 
 			function dayKeyFromSlotStart(iso) {
 				return (iso || "").slice(0, 10); // YYYY-MM-DD
@@ -212,7 +278,7 @@ const qr = await QRCode.toDataURL(url);
 
 					dateEl.innerHTML = "";
 					if (slotsByDay.length === 0) {
-						setStatus("No availability found for the next 3 working days.");
+						setStatus(`No availability found for the next ${DAYS} working days.`);
 						return;
 					}
 
@@ -232,13 +298,13 @@ const qr = await QRCode.toDataURL(url);
 				}
 			}
 
-			if (dateEl) {
+			if (dateEl && !bookedSlotStart) {
 				dateEl.addEventListener("change", () => {
 					if (dateEl.value) renderSlotsForDate(dateEl.value);
 				});
 			}
 
-			if (form) {
+			if (form && !bookedSlotStart) {
 				form.addEventListener("submit", async (e) => {
 					e.preventDefault();
 
@@ -249,6 +315,8 @@ const qr = await QRCode.toDataURL(url);
 
 					const payload = {
 						slotStart: slotStartEl.value,
+						days: DAYS,
+						idempotencyKey: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
 						customer: {
 							name: customer.name.value.trim(),
 							companyName: customer.companyName.value.trim(),
@@ -282,9 +350,9 @@ const qr = await QRCode.toDataURL(url);
 							return;
 						}
 
-						setStatus("Booked! Please check your email for the calendar invite.");
-						form.reset();
-						await loadAvailability();
+						const bookedSlotStart = slotStartEl.value;
+						setCookie(COOKIE_NAME, bookedSlotStart, 60 * 60 * 24 * 30);
+						showBooked(bookedSlotStart);
 					} catch (err) {
 						console.error(err);
 						setStatus("Booking failed. Please try again.");
@@ -292,7 +360,7 @@ const qr = await QRCode.toDataURL(url);
 				});
 			}
 
-			loadAvailability();
+			if (!bookedSlotStart) loadAvailability();
 		</script>
 	</body>
 </html>
