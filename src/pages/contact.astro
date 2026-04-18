@@ -74,7 +74,7 @@ const qr = await QRCode.toDataURL(url);
 						
 
 						<div class="rounded-2xl border border-brand-secondary/10 bg-white p-6">
-							<p class="text-sm font-medium text-brand-secondary">Book an intro call</p>
+							<p class="text-sm font-medium text-brand-secondary">Thank you for booking your introductory call</p>
 
 							<div id="sales-call-success-content" class="hidden mt-3 rounded-xl border border-brand-secondary/10 bg-brand-background/40 p-4">
 								<p id="sales-call-success-text" class="text-sm text-brand-secondary/80"></p>
@@ -198,7 +198,7 @@ const qr = await QRCode.toDataURL(url);
 					year: "numeric",
 				}).format(d);
 
-				return `Introductory meeting arranged at ${time} on ${day}-${month}-${year}`;
+				return `Introductory meeting arranged for ${time} on ${day}-${month}-${year}`;
 			}
 
 			function showBooked(slotStartIso) {
