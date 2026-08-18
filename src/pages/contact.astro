@@ -222,6 +222,17 @@ const qr = await QRCode.toDataURL(url);
 				document.cookie = cookie;
 			}
 
+			function isSlotStartInPast(slotStartIso) {
+				if (!slotStartIso) return false;
+				const t = new Date(slotStartIso).getTime();
+				if (Number.isNaN(t)) return false;
+				return t < Date.now();
+			}
+
+			function clearBookedCookie() {
+				setCookie(COOKIE_NAME, "", 0);
+			}
+
 			function formatBookedWhen(slotStartIso) {
 				const d = new Date(slotStartIso);
 				const time = new Intl.DateTimeFormat("en-GB", {
@@ -258,8 +269,15 @@ const qr = await QRCode.toDataURL(url);
 				setStatus("");
 			}
 
-			const bookedSlotStart = getCookie(COOKIE_NAME);
-			if (bookedSlotStart) showBooked(bookedSlotStart);
+			let bookedSlotStart = getCookie(COOKIE_NAME);
+			if (bookedSlotStart) {
+				if (isSlotStartInPast(bookedSlotStart)) {
+					clearBookedCookie();
+					bookedSlotStart = null;
+				} else {
+					showBooked(bookedSlotStart);
+				}
+			}
 
 			function dayKeyFromSlotStart(iso) {
 				return (iso || "").slice(0, 10); // YYYY-MM-DD
